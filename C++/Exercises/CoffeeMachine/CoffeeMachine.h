@@ -1,21 +1,16 @@
 #ifndef __COFFEE_MACHINE_H__
 #define __COFFEE_MACHINE_H__
-#include <array>
 
 namespace Coffee
 {
-	/*extern*/ const size_t Capacity = 12;
-
 	class CoffeeMachine
 	{
-	public:
-		//Explicitly ask the compiler to generate a default constructor for us; This only works because this class is considered trivial.
-		CoffeeMachine()
-		{
-			Decanter.fill(NONE), ResevoirCapacity.fill(NONE);
-		}
+	public: 
+		CoffeeMachine() = default;
 
-		/* Public Member Functions */
+		/* Type Aliases */
+		using cup = float;
+
 		//Overload the fuck out of these, or just make templates.
 		//CoffeeMachine& bool operator=(){}
 		//bool operator==(){}
@@ -25,39 +20,47 @@ namespace Coffee
 		//bool ++operator(){}
 		//bool --operator(){}
 
-		inline float GetCoffee() const { return Coffee; }
-		inline float GetCoffeeGrounds() const { return CoffeeGrounds; }
-		bool HasCoffeeInDecanter();
-		bool HasCoffeeGrounds();
-		bool HasPower();
-		bool HasCoffeeFilter();
-		//float 
+		/* Public Member Functions */
+		void BrewCoffee() const;           //Begin brewing coffee
+		//void HaltBrew() const;             //Stop brewing coffee -- std::chrono
+		void TurnOffMachine() const;       //Remove POWER flag.
+		bool GetPowerState() const;        //Returns current power state - true is represents a presence of power, false otherwise.
+		bool IsFull() const;               //Returns true if either LiquidInDecanter || LiquidInResevoir == FluidCapacity || CoffeeGrounds == GroundsCapacity
+		bool HasWaterInResevoir() const;   //True if the resevoir isn't empty.
+		bool HasCoffeeInDecanter() const;  //true if the decanter isn't empty.
+		bool HasCoffeeGrounds() const;     //Returns true if the basin isn't empty.
+		bool HasCoffeeFilter() const;      //Returns true if a coffee filter is in place
+		
+		inline cup GetCoffee() const { return Coffee; }
+		inline cup GetCoffeeGrounds() const { return CoffeeGrounds; }
 
 		/* Public Data Members */
-		//Have to fill these when the appropriate constructor is called because MVS is a cunt.
-		std::array<float, Capacity> ResevoirCapacity;
-		std::array<float, Capacity> Decanter;
-		float CoffeeGrounds = 0.0f;
-		float Coffee = 0.0f;
+		const cup FluidCapacity = 12.0f;
+		const cup GroundsCapacity = 1.0f;
+		cup LiquidInDecanter = 0.0f;
+		cup LiquidInResevoir = 0.0f;
+		cup CoffeeGrounds = 0.0f;
+		cup Coffee = 0.0f;
+		bool PoweredOn = false;
+		bool CoffeeFilter = false;
 
 	private:
 		/* Private Data Members */
-		//Todo: turn attributes into a generic class (class & function templates!!!!!!)- p.667~
 		enum Attributes
 		{
-			NONE                   = 0x00000000, // **
+			NONE                   = 0x00000000,
 			POWER                  = 0x00000002, //If this flag is present there is power, otherwise there is not.
 			WATER_IN_RESEVOIR      = 0x00000004, //If this flag is present there is liquid in the water resevoir
 			COFFEE_GROUNDS         = 0x00000008, //If this flag is present there are coffee grounds in their basin, otherwise there is not.
 			COFFEE                 = 0x00000010, //If this flag is present there is coffee!!! Otherwise, there is none.
-			Decanter_FILLED        = 0x00000020, //This flag is set when the Decanter is filled.
+			DECANTER_FILLED        = 0x00000020, //This flag is set when the Decanter is filled.
 			WATER_RESERVIOR_FILLED = 0x00000040, //This flag is set when the water reservoir is filled.
-			COFFEE_BASIN_FILLED    = 0x00000080, //This flag is set if the coffee ground basin is filled.
+			GROUNDS_BASIN_FILLED   = 0x00000080, //This flag is set if the coffee ground basin is filled.
 			COFFEE_FILTER          = 0x00000100, //If this flag is present there is a coffee filter in place, otherwise there is not.
 			FAILED                 = 0x00000200, //This flag is set if, for whatever reason, coffee is failed to be brewed.
 			MAX                    = POWER | WATER_IN_RESEVOIR | WATER_RESERVIOR_FILLED
-			                       | COFFEE_GROUNDS | COFFEE | Decanter_FILLED
-			                       | COFFEE_BASIN_FILLED | COFFEE_FILTER | FAILED
+			                       | COFFEE_GROUNDS | COFFEE | DECANTER_FILLED
+			                       | GROUNDS_BASIN_FILLED | COFFEE_FILTER | FAILED
 		};
 
 		/* Private Data Members */
@@ -65,7 +68,7 @@ namespace Coffee
 
 		/* Private Member Functions */
 		//Member functions define within the class are implicitly inlined.
-		inline void _setAttributes(const int& attris) { _state = attris; return; }
+		void _setAttributes(const int& attris);
 		void _removeAttributes(const int& attris);
 		void _addAttributes(const int& attris);
 		bool _hasAttributes(const int& attris) const;

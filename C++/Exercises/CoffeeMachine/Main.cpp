@@ -9,9 +9,6 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	Coffee::CoffeeMachine mymachine;
 
-	for (const auto& i : mymachine.Decanter)
-		std::cout << i;
-	std::cout << std::endl;
 
 	std::cout << "Press any key to continue..." << std::endl;
 	std::cin.get();

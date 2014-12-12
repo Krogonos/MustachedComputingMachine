@@ -8,7 +8,7 @@ bool Coffee::CoffeeMachine::_hasAttributes(const int& attris = 0) const
 	if (!attris)
 		return (_state ? true : false);
 
-	if (attris == Coffee::CoffeeMachine::Attributes::NONE || attris > Coffee::CoffeeMachine::Attributes::MAX)
+	if (attris <= Coffee::CoffeeMachine::Attributes::NONE || attris > Coffee::CoffeeMachine::Attributes::MAX)
 		return false;
 
 	return (_state & attris ? true : false);
@@ -30,5 +30,15 @@ void Coffee::CoffeeMachine::_addAttributes(const int& attris)
 	if (_hasAttributes(attris))
 		return;
 	_state |= attris;
+	return;
+}
+
+//1) Check range - make sure it's a flag.
+void Coffee::CoffeeMachine::_setAttributes(const int& attris)
+{ 
+	if (attris > Coffee::CoffeeMachine::Attributes::MAX || attris < Coffee::CoffeeMachine::Attributes::NONE || !(attris % 2))
+		return;
+
+	_state = attris;
 	return;
 }
