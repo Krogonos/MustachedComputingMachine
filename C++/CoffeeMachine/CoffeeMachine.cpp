@@ -1,32 +1,45 @@
 #include "CoffeeMachine.h"
 
-//if no args, false if null
 bool Coffee::CoffeeMachine::_hasFlag(const int& flag = 0) const
 {
     if (!flag)
         return false;
 
-    if (flag <= Coffee::CoffeeMachine::Status::NULL_STATUS || flag > Coffee::CoffeeMachine::Status::MAX_FLAGS)
+    return ((_flags & flag) == flag);
+}
+
+//returns state AFTER toggle
+bool Coffee::CoffeeMachine::togglePower()
+{
+    if (_hasFlag(POWER))
+    {
+        _removeFlag(POWER);
         return false;
+    }
 
-    return (this->_flags & flag == flag);
+    _addFlag(POWER);
+    return true;
 }
 
-bool Coffee::CoffeeMachine::togglePower() const
+void Coffee::CoffeeMachine::brew()
 {
-}
+    while (water != 0)
+    {
+        --water;
+        ++coffee;
+    }
 
-void Coffee::CoffeeMachine::addSpecial(const int &)
-{
-}
+    if (coffee)
+        _addFlag(COFFEE);
 
-//1) Must make sure flag is in range
-void Coffee::CoffeeMachine::_setFlag(const int& flag)
-{ 
-    if (flag > Coffee::CoffeeMachine::Status::MAX_FLAGS || flag < Coffee::CoffeeMachine::Status::NULL_STATUS)
-        return;
-
-    this->_flags = flag;
+    if (!water)
+        _removeFlag(WATER);
 
     return;
+}
+
+void Coffee::CoffeeMachine::addSpecial(const int& special)
+{
+    _addFlag(special);
+    std::cout << "This coffee is special." << std::endl;
 }

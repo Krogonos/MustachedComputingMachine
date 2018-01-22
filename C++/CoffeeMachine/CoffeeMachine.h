@@ -6,20 +6,30 @@
 
 namespace Coffee
 {
-
     class CoffeeMachine
     {
     public:
-        //can the synthesized default constructor initialize a signed integer to a below zero value?
-        CoffeeMachine() = default;
+        CoffeeMachine(int w) : water(w)
+        {
+            if (water) _addFlag(WATER);
+        }
 
-        bool brew() const;
-        bool togglePower() const;
+        CoffeeMachine(int w, int c) : CoffeeMachine(w)
+        {
+            coffee = c;
+            if (coffee)
+                _addFlag(COFFEE);
+        }
+
+        unsigned int water = 0;
+        unsigned int coffee = 0;
+
+        bool togglePower();
+        void brew();
         void addSpecial(const int&);
-        
+
         enum Specials
         {
-            /*Specials*/
             CHOCOLATE        = 0x00000002,
             VANILLA          = 0X00000004, 
             HAZELNUT         = 0X00000008, 
@@ -34,10 +44,8 @@ namespace Coffee
     private:
         enum Status
         {
-            /*Status*/
             NULL_STATUS      = 0x00000000,
             BLACK            = 0x00000001,
-
             POWER            = 0x00001000, //
             GROUNDS          = 0x00002000, //
             WATER            = 0x00004000, //
@@ -54,13 +62,10 @@ namespace Coffee
         
         mutable signed int _flags = Status::NULL_STATUS;
 
-        /* Private Member Functions */
-        void _setFlag(const int& flag);
-        inline void _removeFlag(const int& flag) { this->_flags &= ~flag; return; }
-        inline void _addFlag(const int& flag) { this->_flags |= flag; return; }
-
+        inline void _setFlag(const int& flag)    { _flags = flag; }
+        inline void _removeFlag(const int& flag) { _flags &= ~flag; }
+        inline void _addFlag(const int& flag)    { _flags |= flag; }
         bool _hasFlag(const int& flag) const;
     };
 };
-
 #endif
