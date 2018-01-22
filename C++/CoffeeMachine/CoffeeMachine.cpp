@@ -3,33 +3,13 @@
 //if no args, false if null
 bool Coffee::CoffeeMachine::_hasFlag(const int& flag = 0) const
 {
-	if (!flag)
-		return false;
+    if (!flag)
+        return false;
 
-	if (flag <= Coffee::CoffeeMachine::Status::NULL_STATUS || flag > Coffee::CoffeeMachine::Status::MAX_FLAGS)
-		return false;
+    if (flag <= Coffee::CoffeeMachine::Status::NULL_STATUS || flag > Coffee::CoffeeMachine::Status::MAX_FLAGS)
+        return false;
 
-	return (this->_flags & flag == flag);
-}
-
-void Coffee::CoffeeMachine::_removeFlag(const int& flag)
-{
-    if (_hasFlag())
-    {
-        if (_hasFlag(flag))
-           this->_flags &= ~flag;
-    }
-
-    return;
-}
-
-void Coffee::CoffeeMachine::_addFlag(const int& flag)
-{
-    if (_hasFlag(flag))
-        return;
-
-    this->_flags |= flag;
-    return;
+    return (this->_flags & flag == flag);
 }
 
 bool Coffee::CoffeeMachine::togglePower() const
