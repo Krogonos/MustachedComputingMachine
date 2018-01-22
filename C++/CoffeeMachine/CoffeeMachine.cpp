@@ -1,54 +1,52 @@
 #include "CoffeeMachine.h"
 
-//check range
-//if value out of range, resets _state
-bool _Coffee::CoffeeMachine::_hasFlag(const int& flag = 0)
+//if no args, false if null
+bool Coffee::CoffeeMachine::_hasFlag(const int& flag = 0) const
 {
-    if (flag <= _Coffee::CoffeeMachine::Flag::FAILED || flag > _Coffee::CoffeeMachine::Flag::MAX)
-    {
-        std::cout << "Error 0: brew failed. Value: " << flag << std::endl;
-        this->_setFlag(_Coffee::CoffeeMachine::Flag::FAILED);
-        std::cout << "Value Reset" << std::endl;
+	if (!flag)
+		return false;
 
-            return false;
-    }
+	if (flag <= Coffee::CoffeeMachine::Status::NULL_STATUS || flag > Coffee::CoffeeMachine::Status::MAX_FLAGS)
+		return false;
 
-    if (!flag)
-        return (_state ? true : false);
+	return (this->_flags & flag == flag);
+}
 
-
-    return (_state & flag ? true : false);
-} 
-
-void _Coffee::CoffeeMachine::_removeFlag(const int& flag)
+void Coffee::CoffeeMachine::_removeFlag(const int& flag)
 {
     if (_hasFlag())
     {
         if (_hasFlag(flag))
-           this->_state &= ~flag;
+           this->_flags &= ~flag;
     }
 
-    
     return;
 }
 
-//
-void _Coffee::CoffeeMachine::_addFlag(const int& flag)
+void Coffee::CoffeeMachine::_addFlag(const int& flag)
 {
     if (_hasFlag(flag))
         return;
 
-    this->_state |= flag;
+    this->_flags |= flag;
     return;
 }
 
+bool Coffee::CoffeeMachine::togglePower() const
+{
+}
+
+void Coffee::CoffeeMachine::addSpecial(const int &)
+{
+}
+
 //1) Must make sure flag is in range
-void _Coffee::CoffeeMachine::_setFlag(const int& flag)
+void Coffee::CoffeeMachine::_setFlag(const int& flag)
 { 
-    if (flag > _Coffee::CoffeeMachine::Flag::MAX || flag < _Coffee::CoffeeMachine::Flag::FAILED)
+    if (flag > Coffee::CoffeeMachine::Status::MAX_FLAGS || flag < Coffee::CoffeeMachine::Status::NULL_STATUS)
         return;
 
-    this->_state = flag;
+    this->_flags = flag;
 
     return;
 }

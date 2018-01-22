@@ -5,7 +5,7 @@
 #include <iostream>
 #include "CoffeeMachine.h"
 
-int _tmain(int argc, _TCHAR* argv[])
+int main()
 {
 	Coffee::CoffeeMachine lol;
 

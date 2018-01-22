@@ -1,76 +1,64 @@
-#ifndef __COFFEE_MACHINE_H__
-#define __COFFEE_MACHINE_H__
+#ifndef _Coffee_MACHINE_H__
+#define _Coffee_MACHINE_H__
 
 #include <iostream>
- 
-//todo: 
-//boost for real time brewing, timer functions, and measurements
-//exception handling
-//console picture functions
+#include "stdafx.h"
 
-namespace _Coffee
+namespace Coffee
 {
-    using milileter = float;
-    using ounce     = float;
-    using gram      = float;
 
     class CoffeeMachine
     {
     public:
+		//can the synthesized default constructor initialize a signed integer to a below zero value?
         CoffeeMachine() = default;
-        //todo more constructors
 
-        //todo: make size affect visual
-        milileter fluidCapacity = 12.0f;
-        milileter groundCapacity = 1.0f;
-
-        milileter decanter = 0.0f;
-        milileter resevoir = 0.0f;
-        gram      grounds = 0.0f;
-        
-        milileter coffee = 0.0f;
-
-        //void pour(signed 
-        void start() const;
-        void halt() const;
-        void togglePower() const;
-
-        bool full() const;
-        bool status() const;
+		bool brew() const;
+        bool togglePower() const;
+		void addSpecial(const int&);
+		
+		enum Specials
+		{
+			/*Specials*/
+			CHOCOLATE        = 0x00000002,
+			VANILLA          = 0X00000004, 
+			HAZELNUT         = 0X00000008, 
+			PUMPKIN_SPICE    = 0x00000010, 
+			WHIPPED_CREAM    = 0x00000020, 
+			SPRINKLES        = 0x00000040,
+			
+			MAX_SPECIAL =
+			    CHOCOLATE | VANILLA | HAZELNUT | PUMPKIN_SPICE | WHIPPED_CREAM | SPRINKLES
+		};
 
     private:
-        enum Flag
+        enum Status
         {
-            FAILED                 = 0x00000000, //coffee not made
-            SUCCEEDED              = 0x00000002, //
-            POWER                  = 0x00000004, //need before brew
-            GROUNDS                = 0x00000008, //grounds in
-            WATER                  = 0x00000010, //water in
-            FILTER                 = 0x00000020, //filter in
+			/*Status*/
+			NULL_STATUS      = 0x00000000,
+			BLACK		     = 0x00000001,
 
-            DECANTER_MAX           = 0x00000040, //set when filled
-            GROUNDS_MAX            = 0x00000080, //
-            WATER_MAX              = 0x00000100, //
+            POWER            = 0x00001000, //
+            GROUNDS          = 0x00002000, //
+            WATER            = 0x00004000, //
+			COFFEE           = 0x00008000,
+            FULL_DECANTER    = 0x00010000, //
+            FULL_GROUNDS     = 0x00020000, //
+			FULL_WATER       = 0x00040000, //
 
-            CHOCOLATE              = 0x00000200, //set when added
-            VANILLA                = 0x00000400, //
-            WHIPPED_CREAM          = 0x00000800, //
-            HALF_AND_HALF          = 0x00001000, //
-
-            MAX = 
-              POWER | GROUNDS
-            | WATER | FILTER | DECANTER_MAX | GROUNDS_MAX | WATER_MAX
-            | CHOCOLATE | VANILLA | WHIPPED_CREAM | HALF_AND_HALF
+            MAX_FLAGS = 
+		        MAX_SPECIAL |
+                BLACK | POWER | GROUNDS | COFFEE | WATER |
+			    FULL_DECANTER | FULL_GROUNDS | FULL_WATER
         };
+		
+		mutable signed int _flags = Status::NULL_STATUS;
 
-        //could be either signed or unsigned.
-        mutable signed int _state = Flag::POWER;
-        
         /* Private Member Functions */
         void _setFlag(const int& flag);
         void _removeFlag(const int& flag);
         void _addFlag(const int& flag);
-        bool _hasFlag(const int& flag);
+		bool _hasFlag(const int& flag) const;
     };
 };
 
