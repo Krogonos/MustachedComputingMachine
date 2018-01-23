@@ -1,71 +1,96 @@
-#ifndef _COFFEE_MACHINE_H__
-#define _COFFEE_MACHINE_H__
-
-#include <iostream>
 #include "stdafx.h"
 
-namespace Coffee
+class CoffeeMachine
 {
-    class CoffeeMachine
+public:
+    CoffeeMachine() = default;
+    CoffeeMachine(int w) : water(w) { if (water) _addFlag(WATER); }
+    CoffeeMachine(int w, int c) : water(w), coffee(c)
     {
-    public:
-        CoffeeMachine(int w) : water(w)
-        {
-            if (water) _addFlag(WATER);
-        }
+        if (water)
+            _addFlag(WATER);
 
-        CoffeeMachine(int w, int c) : CoffeeMachine(w)
-        {
-            coffee = c;
-            if (coffee)
-                _addFlag(COFFEE);
-        }
+        if (coffee)
+            _addFlag(COFFEE);
 
-        unsigned int water = 0;
-        unsigned int coffee = 0;
+        std::cout << "object created with two arguments." << std::endl;
+        std::cout << _flags << std::endl;
+    }
 
-        bool togglePower();
-        void brew();
-        void addSpecial(const int&);
+    int water = 0;
+    int coffee = 0;
 
-        enum Specials
-        {
-            CHOCOLATE        = 0x00000002,
-            VANILLA          = 0X00000004, 
-            HAZELNUT         = 0X00000008, 
-            PUMPKIN_SPICE    = 0x00000010, 
-            WHIPPED_CREAM    = 0x00000020, 
-            SPRINKLES        = 0x00000040,
-            
-            MAX_SPECIAL =
-                CHOCOLATE | VANILLA | HAZELNUT | PUMPKIN_SPICE | WHIPPED_CREAM | SPRINKLES
-        };
+    bool togglePower();
+    void brew();
 
-    private:
-        enum Status
-        {
-            NULL_STATUS      = 0x00000000,
-            BLACK            = 0x00000001,
-            POWER            = 0x00001000, //
-            GROUNDS          = 0x00002000, //
-            WATER            = 0x00004000, //
-            COFFEE           = 0x00008000,
-            FULL_DECANTER    = 0x00010000, //
-            FULL_GROUNDS     = 0x00020000, //
-            FULL_WATER       = 0x00040000, //
+    void removeSpecial(const int& spec) { _removeFlag(spec); }
+    void addSpecial(const int& spec) { _addFlag(spec); }
+    bool hasSpecial(const int& spec) const { if (_hasFlag(spec)) return true; }
 
-            MAX_FLAGS = 
-                MAX_SPECIAL |
-                BLACK | POWER | GROUNDS | COFFEE | WATER |
-                FULL_DECANTER | FULL_GROUNDS | FULL_WATER
-        };
-        
-        mutable signed int _flags = Status::NULL_STATUS;
-
-        inline void _setFlag(const int& flag)    { _flags = flag; }
-        inline void _removeFlag(const int& flag) { _flags &= ~flag; }
-        inline void _addFlag(const int& flag)    { _flags |= flag; }
-        bool _hasFlag(const int& flag) const;
+    enum Special
+    {
+        CHOCOLATE        = 0x00000002,
+        VANILLA          = 0X00000004,
+        HAZELNUT         = 0X00000008,
+        PUMPKIN_SPICE    = 0x00000010,
+        WHIPPED_CREAM    = 0x00000020,
+        SPRINKLES        = 0x00000040,
+        MAX_SPECIAL =
+            CHOCOLATE | VANILLA | HAZELNUT | PUMPKIN_SPICE | WHIPPED_CREAM | SPRINKLES
     };
+
+private:
+    enum Status
+    {
+        NULL_STATUS  = 0x00000000,
+        BLACK        = 0x00000001,
+        POWER        = 0x00001000,
+        GROUNDS      = 0x00002000,
+        WATER        = 0x00004000,
+        COFFEE       = 0x00008000,
+
+        MAX_FLAGS =
+        MAX_SPECIAL |
+        BLACK | POWER | GROUNDS | COFFEE | WATER
+    };
+
+    mutable int _flags = 0;
+
+    inline void _setFlag(const int& flag)    { _flags = flag; }
+    inline void _removeFlag(const int& flag) { _flags &= ~flag; }
+    inline void _addFlag(const int& flag)    { _flags |= flag; }
+    inline bool _hasFlag(const int& flag = 0) const { return ((_flags & flag) == flag); }
 };
-#endif
+
+
+bool CoffeeMachine::togglePower()
+{
+    if (_hasFlag(POWER))
+    {
+        _removeFlag(POWER);
+        return false;
+    }
+
+    _addFlag(POWER);
+    return true;
+}
+
+void CoffeeMachine::brew()
+{
+    while (water != 0)
+    {
+        --water;
+        ++coffee;
+    }
+
+    if (coffee)
+        _addFlag(COFFEE);
+
+    if (!water)
+        _removeFlag(WATER);
+
+    return;
+}
+
+
+

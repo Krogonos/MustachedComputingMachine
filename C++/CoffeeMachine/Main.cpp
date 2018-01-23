@@ -5,12 +5,21 @@
 #include <iostream>
 #include "CoffeeMachine.h"
 
-int _tmain(int argc, _TCHAR* argv[])
+int main()
 {
-	Coffee::CoffeeMachine mymachine;
+	CoffeeMachine cherry(10, 5);
+
+    cherry.brew();
 
 
-	std::cout << "Press any key to continue..." << std::endl;
+
+    std::cout << "Should be... 0 and 15!\n" << std::endl;
+        
+
+
+
+
+
 	std::cin.get();
 	std::cout << std::flush;
 	return 0;

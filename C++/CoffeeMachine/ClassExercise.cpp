@@ -7,9 +7,12 @@
 
 int main()
 {
-	Coffee::CoffeeMachine lol;
+	CoffeeMachine lol(5, 5);
 
-	std::cout << "Press any key to continue..." << std::endl;
+    lol.brew();
+
+
+    std::cout << lol.coffee << std::endl;
 	std::cin.get();
 	std::cout << std::flush;
 	return 0;
